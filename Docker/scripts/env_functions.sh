@@ -1,4 +1,10 @@
 export_env_vars() {
+    if [ "$DOCKER_ENV" = "true" ]; then
+        # Running in Docker — rely on environment variables passed by the platform (e.g. Railway).
+        # Do not load from a .env file, which would override injected variables.
+        return 0
+    fi
+
     if [ -f .env ]; then
         while IFS='=' read -r key value; do
             if [[ -z "$key" || "$key" =~ ^\s*# || -z "$value" ]]; then
